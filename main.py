@@ -52,22 +52,9 @@ def build_tool_definition_from_man(command):
             "properties": {},
             "required": []
         },
-        "function": {
-            "name": f"{command}_command",
-            "description": description,
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": []
-            }
-        }
     }
 
     for option, desc in options.items():
-        tool_definition["function"]["parameters"]["properties"][option] = {
-            "type": "boolean" if desc.lower() in ["enable", "disable"] else "string",
-            "description": desc
-        }
         tool_definition["parameters"]["properties"][option] = {
             "type": "boolean" if desc.lower() in ["enable", "disable"] else "string",
             "description": desc
