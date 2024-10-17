@@ -75,14 +75,7 @@ def execute_command(command, args):
     return result.stdout
 
 def main():
-    command = "ls"
-    tool_definition = build_tool_definition_from_man(command)
-
-    # Save the tool definition to a JSON file
-    # with open(f"{command}_tool_definition.json", "w") as f:
-    #     json.dump(tool_definition, f, indent=4)
-
-    # print(f"Tool definition for '{command}' has been saved to {command}_tool_definition.json")
+    tool_definition = build_tool_definition_from_man("ls")
 
     client = openai.Client(api_key=os.getenv('OPENAI_API_KEY'))
 
@@ -90,7 +83,7 @@ def main():
     response = client.chat.completions.create(
         model='gpt-4o',
         messages=[
-          {"role": "user", "content": "list files sorted by name with human-readable file sizes"}
+            {"role": "user", "content": "list files sorted by name with human-readable file sizes"}
         ],
         functions=[tool_definition]
     )
@@ -103,6 +96,7 @@ def main():
         for tool_call in tool_calls:
             function_name = tool_call.name
             arguments = json.loads(tool_call.arguments)
+            command = function_name.replace("_command", "")
 
             if function_name == f"{command}_command":
                 output = execute_command(command, arguments)
